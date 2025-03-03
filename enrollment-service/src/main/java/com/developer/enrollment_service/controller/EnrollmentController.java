@@ -25,7 +25,7 @@ public class EnrollmentController {
         return enrollmentService.getEnrollmentById(id);
     }
 
-    @GetMapping("/students/{studentId}")
+    @GetMapping("/student/{studentId}")
     public List<Enrollment> getEnrollmentsByStudentId(@PathVariable Long studentId){
         return enrollmentService.getEnrollmentsByStudentId(studentId);
     }
