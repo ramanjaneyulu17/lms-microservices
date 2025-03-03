@@ -49,7 +49,7 @@ public class PaymentService {
         }
     }
 
-    public void deletePayement(Long id) {
+    public void deletePayment(Long id) {
         paymentDto.deleteById(id);
     }
 }
