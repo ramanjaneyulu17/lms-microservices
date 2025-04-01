@@ -3,6 +3,8 @@ package com.developer.course_service.service;
 import com.developer.course_service.dao.CourseDao;
 import com.developer.course_service.model.Course;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,42 +19,50 @@ public class CourseService {
         return courseDao.findAll();
     }
 
-    public Optional<Course> getCourseById(Integer id) {
-        return courseDao.findById(id);
+    public ResponseEntity<Optional<Course>> getCourseById(Integer id) {
+        Optional<Course> findCourse=courseDao.findById(id);
+        if(findCourse.isEmpty()){
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(findCourse,HttpStatus.OK);
     }
 
-    public String addCourse(Course course) {
-        Optional<Course> course1=courseDao.findByCourseTitle(course.getCourseTitle());
-        if(course1.isPresent()){
-            return "Course is Already exists";
+    public ResponseEntity<String> addCourse(Course course) {
+        Optional<Course> findCourse=courseDao.findByCourseTitle(course.getCourseTitle());
+        if(findCourse.isPresent()){
+            return new ResponseEntity<>("Course is Already exists",HttpStatus.BAD_REQUEST);
         }
         else {
             courseDao.save(course);
-            return "Added new Course";
+            return new ResponseEntity<>("Added new Course",HttpStatus.CREATED);
         }
     }
 
-    public List<Course> getCoursesByCategory(String category) {
-        return courseDao.findByCourseCategory(category);
+    public ResponseEntity<List<Course>> getCoursesByCategory(String category) {
+        List<Course> findCourses=courseDao.findByCourseCategory(category);
+        if(findCourses.isEmpty()){
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(findCourses,HttpStatus.OK);
     }
 
-    public String updateCourse(Integer id, Course course) {
-        Optional<Course> course1=courseDao.findById(id);
-        if(course1.isPresent()){
+    public ResponseEntity<String> updateCourse(Integer id, Course course) {
+        Optional<Course> findCourse=courseDao.findById(id);
+        if(findCourse.isPresent()){
             courseDao.save(course);
-            return "Updated the course.";
+            return new ResponseEntity<>("Updated the course.",HttpStatus.OK);
         }else{
-            return "Course not found.";
+            return new ResponseEntity<>("Course not found.",HttpStatus.NOT_FOUND);
         }
     }
 
-    public String deleteCourse(Integer id) {
+    public ResponseEntity<String> deleteCourse(Integer id) {
         Optional<Course> courseOptional=courseDao.findById(id);
         if(courseOptional.isPresent()){
             courseDao.deleteById(id);
-            return "Deleted the course";
+            return new ResponseEntity<>("Deleted the course",HttpStatus.OK);
         }else{
-            return "No course";
+            return new ResponseEntity<>("No course",HttpStatus.NOT_FOUND);
         }
     }
 }

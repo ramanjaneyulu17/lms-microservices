@@ -3,13 +3,14 @@ package com.developer.enrollment_service.controller;
 import com.developer.enrollment_service.model.Enrollment;
 import com.developer.enrollment_service.service.EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/enrollments")
+@RequestMapping("/enrollment")
 public class EnrollmentController {
 
     @Autowired
@@ -25,14 +26,14 @@ public class EnrollmentController {
         return enrollmentService.getEnrollmentById(id);
     }
 
-    @GetMapping("/student/{studentId}")
-    public List<Enrollment> getEnrollmentsByStudentId(@PathVariable Long studentId){
-        return enrollmentService.getEnrollmentsByStudentId(studentId);
+    @GetMapping("/userEnrollments/{userId}")
+    public List<Enrollment> getEnrollmentsByUserId(@PathVariable Long userId){
+        return enrollmentService.getEnrollmentsByUserId(userId);
     }
 
-    @PostMapping("/enrollStudent")
-    public Enrollment enrollStudent(@RequestParam Long studentId, @RequestParam Long courseId){
-        return enrollmentService.enrollStudent(studentId,courseId);
+    @PostMapping("/enroll")
+    public ResponseEntity<String> enrollUser(@RequestBody Enrollment enrollment){
+        return enrollmentService.enrollUser(enrollment);
     }
 
     @DeleteMapping("/deleteEnrollment/{id}")

@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface EnrollmentDao extends JpaRepository<Enrollment, Long> {
-    List<Enrollment> findEnrollmentsByStudentId(Long studentId);
+    List<Enrollment> findEnrollmentsByUserId(Long userId);
 }
 

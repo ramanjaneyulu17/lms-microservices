@@ -3,6 +3,8 @@ package com.developer.user_service.service;
 import com.developer.user_service.dao.UserDao;
 import com.developer.user_service.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,25 +20,29 @@ public class UserService {
         return userDao.findAll();
     }
 
-    public Optional<User> getUserById(Integer id) {
-        return userDao.findById(Long.valueOf(id));
+    public ResponseEntity<Optional<User>> getUserById(Integer id) {
+        Optional<User> findUser=userDao.findById(Long.valueOf(id));
+        if(findUser.isEmpty()){
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(findUser,HttpStatus.OK);
     }
 
-    public String register(User user) {
+    public ResponseEntity<String> register(User user) {
         if(userDao.existsByUserName(user.getUserName())){
-            return "User Exist";
+            return new ResponseEntity<>("User already exist",HttpStatus.ALREADY_REPORTED);
         }else {
             userDao.save(user);
-            return "success";
+            return new ResponseEntity<>("Registration success",HttpStatus.CREATED);
         }
     }
 
-    public String authenticateUser(String username, String password) {
+    public ResponseEntity<String> authenticateUser(String username, String password) {
         Optional<User> user=userDao.findByUserName(username);
         if(user.isPresent()  && password.equals(user.get().getUserPassword())){
-            return "Login Success";
+            return new ResponseEntity<>("Login Success",HttpStatus.OK);
         }else {
-            return "Miss match username or password";
+            return new ResponseEntity<>("Miss match username or password",HttpStatus.NOT_ACCEPTABLE);
         }
     }
 }

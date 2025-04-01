@@ -3,13 +3,14 @@ package com.developer.user_service.controller;
 import com.developer.user_service.model.User;
 import com.developer.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -20,18 +21,18 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/allUsers/{id}")
-    public Optional<User> getUserById(@PathVariable Integer id){
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<User>> getUserById(@PathVariable Integer id){
         return userService.getUserById(id);
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody User user){
+    public ResponseEntity<String> register(@RequestBody User user){
         return userService.register(user);
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username,@RequestParam String password){
+    public ResponseEntity<String> login(@RequestParam String username,@RequestParam String password){
         return userService.authenticateUser(username,password);
     }
 }
