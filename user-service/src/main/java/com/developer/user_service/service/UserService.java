@@ -5,6 +5,7 @@ import com.developer.user_service.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public class UserService {
 
     @Autowired
     private UserDao userDao;
+
+    private BCryptPasswordEncoder encoder= new BCryptPasswordEncoder(12);
 
     public List<User> getAllUsers() {
         return userDao.findAll();
@@ -32,6 +35,7 @@ public class UserService {
         if(userDao.existsByUserName(user.getUserName())){
             return new ResponseEntity<>("User already exist",HttpStatus.ALREADY_REPORTED);
         }else {
+            user.setUserPassword(encoder.encode(user.getUserPassword()));
             userDao.save(user);
             return new ResponseEntity<>("Registration success",HttpStatus.CREATED);
         }
